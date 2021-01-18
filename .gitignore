@@ -3,7 +3,6 @@
 /local.properties
 **/*.iml
 **/.*
-gradle/
 gradlew
 gradlew.bat
 !/.gitignore
@@ -13,4 +12,3 @@ gradlew.bat
 .externalNativeBuild
 .cxx
 local.properties
-/gradle.properties
