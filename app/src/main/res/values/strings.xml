@@ -1,0 +1,13 @@
+<resources>
+	<string name="app_name">Notes</string>
+
+	<string name="title_list_text_view">Список заметок:</string>
+	<string name="title_create_text_view">Создание заметки</string>
+	<string name="note_title_create_edit_text">Введите название заметки</string>
+	<string name="note_description_create_edit_text">Введите содержание заметки</string>
+	<string name="create_note_create_button">Создать заметку</string>
+	<string name="note_created">Заметка создана</string>
+	<string name="title_details_text_view">Редактирование заметки</string>
+	<string name="note_change_details_button">Изменить</string>
+	<string name="note_changed">Заметка изменена</string>
+</resources>
