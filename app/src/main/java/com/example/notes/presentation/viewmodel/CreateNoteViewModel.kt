@@ -16,13 +16,16 @@ class CreateNoteViewModel @Inject constructor(
 	private val router: Router
 ) : BaseViewModel() {
 
+	val title: MutableLiveData<String> = MutableLiveData()
+	val description: MutableLiveData<String> = MutableLiveData()
+
 	private val _message: MutableLiveData<String> = MutableLiveData()
 	val message: LiveData<String> = _message
 
-	fun createNote(title: String, description: String) {
+	fun createNote() {
 		val note = Note(
-			title = title,
-			description = description
+			title = title.value ?: "",
+			description = description.value ?: ""
 		)
 		createNoteUseCase(note)
 			.subscribeOn(Schedulers.io())
