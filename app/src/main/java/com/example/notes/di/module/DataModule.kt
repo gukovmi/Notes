@@ -2,6 +2,7 @@ package com.example.notes.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.example.notes.data.converter.NoteConverter
 import com.example.notes.data.datasource.LocalNoteDataSource
 import com.example.notes.data.datasource.LocalNoteDataSourceImpl
 import com.example.notes.data.db.AppDatabase
@@ -18,9 +19,10 @@ class DataModule {
 	@Singleton
 	@Provides
 	fun provideNoteRepository(
-		localNoteDataSource: LocalNoteDataSource
+		localNoteDataSource: LocalNoteDataSource,
+		noteConverter: NoteConverter
 	): NoteRepository =
-		NoteRepositoryImpl(localNoteDataSource)
+		NoteRepositoryImpl(localNoteDataSource, noteConverter)
 
 	@Singleton
 	@Provides
