@@ -2,9 +2,7 @@ package com.example.notes.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_note_details.noteDescriptionDetai
 import kotlinx.android.synthetic.main.fragment_note_details.noteTitleDetailsEditText
 import javax.inject.Inject
 
-class NoteDetailsFragment : BaseFragment() {
+class NoteDetailsFragment : BaseFragment(R.layout.fragment_note_details) {
 
 	@Inject
 	lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -38,13 +36,6 @@ class NoteDetailsFragment : BaseFragment() {
 		App.component.injectNoteDetailsFragment(this)
 		viewModel = ViewModelProvider(this, viewModelFactory).get(NoteDetailsViewModel::class.java)
 		super.onAttach(context)
-	}
-
-	override fun onCreateView(
-		inflater: LayoutInflater, container: ViewGroup?,
-		savedInstanceState: Bundle?
-	): View? {
-		return inflater.inflate(R.layout.fragment_note_details, container, false)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
