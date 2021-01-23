@@ -18,6 +18,9 @@ class NoteDetailsViewModel @Inject constructor(
 	private val router: Router
 ) : BaseViewModel() {
 
+	val title: MutableLiveData<String> = MutableLiveData()
+	val description: MutableLiveData<String> = MutableLiveData()
+
 	private val _note: MutableLiveData<Note> = MutableLiveData()
 	val note: LiveData<Note> = _note
 
@@ -34,8 +37,11 @@ class NoteDetailsViewModel @Inject constructor(
 					   }).addToComposite()
 	}
 
-	fun updateNote(id: Long, title: String, description: String) {
-		val note = Note(id, title, description)
+	fun updateNote(id: Long) {
+		val note = Note(
+			id = id,
+			title = this.title.value ?: "",
+			description = this.description.value ?: "")
 		updateNoteUseCase(note).subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe({

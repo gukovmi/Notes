@@ -11,6 +11,7 @@ import com.example.notes.R
 import com.example.notes.domain.entity.Note
 import com.example.notes.presentation.viewmodel.NoteDetailsViewModel
 import com.example.notes.ui.base.BaseFragment
+import com.example.notes.ui.utils.bind
 import kotlinx.android.synthetic.main.fragment_note_details.noteChangeDetailsButton
 import kotlinx.android.synthetic.main.fragment_note_details.noteDescriptionDetailsEditText
 import kotlinx.android.synthetic.main.fragment_note_details.noteTitleDetailsEditText
@@ -51,13 +52,13 @@ class NoteDetailsFragment : BaseFragment(R.layout.fragment_note_details) {
 
 	private fun initViews(noteId: Long) {
 		noteChangeDetailsButton.setOnClickListener {
-			val title = noteTitleDetailsEditText.text.toString()
-			val description = noteDescriptionDetailsEditText.text.toString()
-			viewModel.updateNote(noteId, title, description)
+			viewModel.updateNote(noteId)
 		}
 	}
 
 	private fun initListeners() {
+		viewModel.title.bind(this.viewLifecycleOwner, noteTitleDetailsEditText)
+		viewModel.description.bind(this.viewLifecycleOwner, noteDescriptionDetailsEditText)
 		viewModel.note.observe(this.viewLifecycleOwner, Observer<Note> { note ->
 			noteTitleDetailsEditText.setText(note.title)
 			noteDescriptionDetailsEditText.setText(note.description)
