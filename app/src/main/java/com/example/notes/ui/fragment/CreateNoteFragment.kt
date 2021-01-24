@@ -4,13 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.notes.App
 import com.example.notes.R
 import com.example.notes.presentation.viewmodel.CreateNoteViewModel
 import com.example.notes.ui.base.BaseFragment
 import com.example.notes.ui.utils.bind
+import com.example.notes.ui.utils.subscribeSafe
 import kotlinx.android.synthetic.main.fragment_create_note.createNoteCreateButton
 import kotlinx.android.synthetic.main.fragment_create_note.noteDescriptionCreateEditText
 import kotlinx.android.synthetic.main.fragment_create_note.noteTitleCreateEditText
@@ -50,7 +50,7 @@ class CreateNoteFragment : BaseFragment(R.layout.fragment_create_note) {
 	private fun initListeners() {
 		viewModel.title.bind(this.viewLifecycleOwner, noteTitleCreateEditText)
 		viewModel.description.bind(this.viewLifecycleOwner, noteDescriptionCreateEditText)
-		viewModel.message.observe(this.viewLifecycleOwner, Observer<String> { error ->
+		viewModel.message.subscribeSafe(this.viewLifecycleOwner, { error ->
 			showMessage(error)
 		})
 	}
