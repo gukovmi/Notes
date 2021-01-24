@@ -7,6 +7,7 @@ import com.example.notes.domain.usecase.GetNoteByIdUseCase
 import com.example.notes.domain.usecase.UpdateNoteUseCase
 import com.example.notes.presentation.base.BaseViewModel
 import com.example.notes.ui.Screens
+import com.example.notes.ui.utils.SingleLiveEvent
 import com.github.terrakok.cicerone.Router
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +29,7 @@ class NoteDetailsViewModel @Inject constructor(
 	val title: MutableLiveData<String> = MutableLiveData()
 	val description: MutableLiveData<String> = MutableLiveData()
 
-	private val _message: MutableLiveData<String> = MutableLiveData()
+	private val _message: SingleLiveEvent<String> = SingleLiveEvent()
 	val message: LiveData<String> = _message
 
 	private fun getNoteById(id: Long) {
