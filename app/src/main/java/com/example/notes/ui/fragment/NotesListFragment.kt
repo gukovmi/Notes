@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notes.App
@@ -53,12 +52,8 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 	}
 
 	private fun initListeners() {
-		viewModel.notes.observe(this.viewLifecycleOwner, Observer<List<Note>> { notesList ->
-			notesListAdapter.showNotes(notesList)
-		})
-		viewModel.message.subscribeSafe(this.viewLifecycleOwner, { error ->
-			showMessage(error)
-		})
+		viewModel.notes.observe(this.viewLifecycleOwner, notesListAdapter::showNotes)
+		viewModel.message.subscribeSafe(this.viewLifecycleOwner, ::showMessage)
 	}
 
 	private fun initAdapter() {
@@ -67,9 +62,8 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 			onNoteItemClick = { note: Note ->
 				viewModel.navigateToNoteDetails(note.id)
 			},
-			onDeleteButtonClick = { note ->
-				viewModel.deleteNote(note)
-			})
+			onDeleteButtonClick = viewModel::deleteNote
+		)
 		notesListRecyclerView.adapter = notesListAdapter
 	}
 

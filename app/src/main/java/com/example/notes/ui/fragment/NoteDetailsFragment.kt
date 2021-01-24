@@ -59,9 +59,7 @@ class NoteDetailsFragment : BaseFragment(R.layout.fragment_note_details) {
 	private fun initListeners() {
 		viewModel.title.bind(this.viewLifecycleOwner, noteTitleDetailsEditText)
 		viewModel.description.bind(this.viewLifecycleOwner, noteDescriptionDetailsEditText)
-		viewModel.message.subscribeSafe(this.viewLifecycleOwner, { error ->
-			showMessage(error)
-		})
+		viewModel.message.subscribeSafe(this.viewLifecycleOwner, ::showMessage)
 	}
 
 	private fun showMessage(message: String) {
