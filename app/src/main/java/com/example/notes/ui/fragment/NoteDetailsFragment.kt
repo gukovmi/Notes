@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.notes.App
 import com.example.notes.R
-import com.example.notes.domain.entity.Note
 import com.example.notes.presentation.viewmodel.NoteDetailsViewModel
 import com.example.notes.ui.base.BaseFragment
 import com.example.notes.ui.utils.bind
@@ -44,25 +43,22 @@ class NoteDetailsFragment : BaseFragment(R.layout.fragment_note_details) {
 
 		val noteId = arguments?.getLong("noteId")
 		if (noteId != null) {
-			initViews(noteId)
-			viewModel.getNoteById(noteId)
+			viewModel.noteId = noteId
 		}
+
+		initViews()
 		initListeners()
 	}
 
-	private fun initViews(noteId: Long) {
+	private fun initViews() {
 		noteChangeDetailsButton.setOnClickListener {
-			viewModel.updateNote(noteId)
+			viewModel.updateNote()
 		}
 	}
 
 	private fun initListeners() {
 		viewModel.title.bind(this.viewLifecycleOwner, noteTitleDetailsEditText)
 		viewModel.description.bind(this.viewLifecycleOwner, noteDescriptionDetailsEditText)
-		viewModel.note.observe(this.viewLifecycleOwner, Observer<Note> { note ->
-			noteTitleDetailsEditText.setText(note.title)
-			noteDescriptionDetailsEditText.setText(note.description)
-		})
 		viewModel.message.observe(this.viewLifecycleOwner, Observer<String> { error ->
 			showMessage(error)
 		})

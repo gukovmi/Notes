@@ -18,37 +18,45 @@ class NoteDetailsViewModel @Inject constructor(
 	private val router: Router
 ) : BaseViewModel() {
 
+	var noteId: Long? = null
+		set(value) {
+			if (field == value) return
+			field = value
+			field?.let { getNoteById(it) }
+		}
+
 	val title: MutableLiveData<String> = MutableLiveData()
 	val description: MutableLiveData<String> = MutableLiveData()
-
-	private val _note: MutableLiveData<Note> = MutableLiveData()
-	val note: LiveData<Note> = _note
 
 	private val _message: MutableLiveData<String> = MutableLiveData()
 	val message: LiveData<String> = _message
 
-	fun getNoteById(id: Long) {
+	private fun getNoteById(id: Long) {
 		getNoteByIdUseCase(id).subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe({ note ->
-						   _note.value = note
+						   description.value = note.description
+						   title.value = note.title
 					   }, { error ->
 						   _message.value = error.localizedMessage
 					   }).addToComposite()
 	}
 
-	fun updateNote(id: Long) {
-		val note = Note(
-			id = id,
-			title = this.title.value ?: "",
-			description = this.description.value ?: "")
-		updateNoteUseCase(note).subscribeOn(Schedulers.io())
-			.observeOn(AndroidSchedulers.mainThread())
-			.subscribe({
-						   router.navigateTo(Screens.notesList())
-					   },
-					   { error ->
-						   _message.value = error.localizedMessage
-					   }).addToComposite()
+	fun updateNote() {
+		noteId?.let {
+			val note = Note(
+				id = it,
+				title = this.title.value ?: "",
+				description = this.description.value ?: ""
+			)
+			updateNoteUseCase(note).subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe({
+							   router.navigateTo(Screens.notesList())
+						   },
+						   { error ->
+							   _message.value = error.localizedMessage
+						   }).addToComposite()
+		}
 	}
 }
