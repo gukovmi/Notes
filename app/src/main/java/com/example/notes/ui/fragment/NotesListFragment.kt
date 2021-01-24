@@ -13,6 +13,7 @@ import com.example.notes.domain.entity.Note
 import com.example.notes.presentation.viewmodel.NotesListViewModel
 import com.example.notes.ui.adapter.NotesListAdapter
 import com.example.notes.ui.base.BaseFragment
+import com.example.notes.ui.utils.subscribeSafe
 import kotlinx.android.synthetic.main.fragment_notes_list.createNoteNotesListButton
 import kotlinx.android.synthetic.main.fragment_notes_list.notesListRecyclerView
 import javax.inject.Inject
@@ -55,7 +56,7 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 		viewModel.notes.observe(this.viewLifecycleOwner, Observer<List<Note>> { notesList ->
 			notesListAdapter.showNotes(notesList)
 		})
-		viewModel.message.observe(this.viewLifecycleOwner, Observer<String> { error ->
+		viewModel.message.subscribeSafe(this.viewLifecycleOwner, { error ->
 			showMessage(error)
 		})
 	}
