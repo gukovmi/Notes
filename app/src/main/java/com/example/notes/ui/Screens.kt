@@ -7,7 +7,8 @@ import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 object Screens {
 
-	fun notesList() = FragmentScreen { NotesListFragment.newInstance() }
-	fun noteDetails(id: Long) = FragmentScreen { NoteDetailsFragment.newInstance(id) }
-	fun createNote() = FragmentScreen { CreateNoteFragment.newInstance() }
+	data class NoteDetails(private val id: Long) : FragmentScreen(fragmentCreator = { NoteDetailsFragment.newInstance(id) })
+
+	object NotesList : FragmentScreen(fragmentCreator = { NotesListFragment.newInstance() })
+	object CreateNote : FragmentScreen(fragmentCreator = { CreateNoteFragment.newInstance() })
 }

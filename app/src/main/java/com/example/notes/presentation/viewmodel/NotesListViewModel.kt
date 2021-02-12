@@ -25,30 +25,26 @@ class NotesListViewModel @Inject constructor(
 	private val _message: SingleLiveEvent<String> = SingleLiveEvent()
 	val message: LiveData<String> = _message
 
-	init {
-		getNotes()
-	}
-
 	fun navigateToNoteDetails(id: Long) {
-		router.navigateTo(Screens.noteDetails(id))
+		router.navigateTo(Screens.NoteDetails(id))
 	}
 
 	fun navigateToCreateNote() {
-		router.navigateTo(Screens.createNote())
+		router.navigateTo(Screens.CreateNote)
 	}
 
 	fun deleteNote(note: Note) {
 		deleteNoteUseCase(note).subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe({
-						   getNotes()
+						   loadNotes()
 					   },
 					   { error ->
 						   _message.value = error.localizedMessage
 					   }).addToComposite()
 	}
 
-	private fun getNotes() {
+	fun loadNotes() {
 		getNotesUseCase()
 			.subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())

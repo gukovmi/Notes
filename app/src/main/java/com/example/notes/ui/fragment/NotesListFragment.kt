@@ -42,6 +42,7 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 		initViews(view)
 		initAdapter()
 		initListeners()
+		viewModel.loadNotes()
 	}
 
 	private fun initViews(view: View) {

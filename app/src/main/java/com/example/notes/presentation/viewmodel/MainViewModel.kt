@@ -10,6 +10,6 @@ class MainViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	fun navigateToNotesList() {
-		router.replaceScreen(Screens.notesList())
+		router.replaceScreen(Screens.NotesList)
 	}
 }

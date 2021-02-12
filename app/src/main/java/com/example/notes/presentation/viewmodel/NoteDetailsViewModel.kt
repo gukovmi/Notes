@@ -53,7 +53,7 @@ class NoteDetailsViewModel @Inject constructor(
 			updateNoteUseCase(note).subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe({
-							   router.navigateTo(Screens.notesList())
+							   router.navigateTo(Screens.NotesList)
 						   },
 						   { error ->
 							   _message.value = error.localizedMessage
