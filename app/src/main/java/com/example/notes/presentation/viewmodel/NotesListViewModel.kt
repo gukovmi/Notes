@@ -37,7 +37,7 @@ class NotesListViewModel @Inject constructor(
 		deleteNoteUseCase(note).subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe({
-						   loadNotes()
+						   _notes.value = _notes.value?.filter { it != note }
 					   },
 					   { error ->
 						   _message.value = error.localizedMessage
