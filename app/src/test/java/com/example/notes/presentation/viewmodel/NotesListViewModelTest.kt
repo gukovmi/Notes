@@ -5,12 +5,11 @@ import androidx.lifecycle.Observer
 import com.example.notes.domain.entity.Note
 import com.example.notes.domain.usecase.DeleteNoteUseCase
 import com.example.notes.domain.usecase.GetNotesUseCase
+import com.example.notes.presentation.state.NotesListState
 import com.example.notes.testrule.SchedulersTestRule
 import com.example.notes.ui.Screens
 import com.github.terrakok.cicerone.Router
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Before
@@ -23,94 +22,114 @@ import java.net.UnknownHostException
 @RunWith(MockitoJUnitRunner::class)
 class NotesListViewModelTest {
 
-	@Rule
-	@JvmField
-	val schedulersTestRule = SchedulersTestRule()
+    @Rule
+    @JvmField
+    val schedulersTestRule = SchedulersTestRule()
 
-	@Rule
-	@JvmField
-	val testExecutor = InstantTaskExecutorRule()
+    @Rule
+    @JvmField
+    val testExecutor = InstantTaskExecutorRule()
 
-	private val getNotesUseCase: GetNotesUseCase = mock()
-	private val deleteNoteUseCase: DeleteNoteUseCase = mock()
-	private val router: Router = mock()
+    private val getNotesUseCase: GetNotesUseCase = mock()
+    private val deleteNoteUseCase: DeleteNoteUseCase = mock()
+    private val router: Router = mock()
 
-	private val viewModel = NotesListViewModel(
-		getNotesUseCase,
-		deleteNoteUseCase,
-		router
-	)
+    private val viewModel = NotesListViewModel(
+            getNotesUseCase,
+            deleteNoteUseCase,
+            router
+    )
 
-	private val notesObserver: Observer<List<Note>> = mock()
-	private val messageObserver: Observer<String> = mock()
+    private val notesObserver: Observer<List<Note>> = mock()
+    private val stateObserver: Observer<NotesListState> = mock()
 
-	private val id: Long = 55
-	private val note = Note(
-		id = id,
-		description = "description",
-		title = "title"
-	)
-	private val notesList = listOf(note)
+    private val id: Long = 55
+    private val note = Note(
+            id = id,
+            description = "description",
+            title = "title"
+    )
+    private val notesList = listOf(note)
 
-	@Before
-	fun setUp() {
-		viewModel.notes.observeForever(notesObserver)
-		viewModel.message.observeForever(messageObserver)
-	}
+    @Before
+    fun setUp() {
+        viewModel.notes.observeForever(notesObserver)
+        viewModel.state.observeForever(stateObserver)
+    }
 
-	@Test
-	fun `navigateToNoteDetails EXPECT router navigate to details screen`() {
-		viewModel.navigateToNoteDetails(id)
+    @Test
+    fun `navigateToNoteDetails EXPECT router navigate to details screen`() {
+        viewModel.navigateToNoteDetails(id)
 
-		verify(router).navigateTo(Screens.NoteDetails(id))
-	}
+        verify(router).navigateTo(Screens.NoteDetails(id))
+    }
 
-	@Test
-	fun `navigateToCreateNote EXPECT router navigate to create screen`() {
-		viewModel.navigateToCreateNote()
+    @Test
+    fun `navigateToCreateNote EXPECT router navigate to create screen`() {
+        viewModel.navigateToCreateNote()
 
-		verify(router).navigateTo(Screens.CreateNote)
-	}
+        verify(router).navigateTo(Screens.CreateNote)
+    }
 
-	@Test
-	fun `deleteNote successful EXPECT notes will be changed`() {
-		whenever(getNotesUseCase()).thenReturn(Single.just(notesList))
-		whenever(deleteNoteUseCase(note)).thenReturn(Completable.complete())
+    @Test
+    fun `deleteNote successful EXPECT notes will be changed`() {
+        whenever(getNotesUseCase()).thenReturn(Single.just(notesList))
+        whenever(deleteNoteUseCase(note)).thenReturn(Completable.complete())
 
-		viewModel.loadNotes()
-		viewModel.deleteNote(note)
+        viewModel.loadNotes()
+        viewModel.deleteNote(note)
 
-		verify(notesObserver).onChanged(emptyList())
-	}
+        verify(notesObserver).onChanged(emptyList())
+    }
 
-	@Test
-	fun `deleteNote unsuccessful EXPECT message will be changed`() {
-		val error = UnknownHostException()
+    @Test
+    fun `deleteNote successful EXPECT state will be changed on default`() {
+        whenever(getNotesUseCase()).thenReturn(Single.just(notesList))
+        whenever(deleteNoteUseCase(note)).thenReturn(Completable.complete())
 
-		whenever(deleteNoteUseCase(note)).thenReturn(Completable.error(error))
+        viewModel.loadNotes()
+        viewModel.deleteNote(note)
 
-		viewModel.deleteNote(note)
+        inOrder(stateObserver) {
+            verify(stateObserver).onChanged(NotesListState.InProgress)
+            verify(stateObserver).onChanged(NotesListState.Default)
+        }
+    }
 
-		verify(messageObserver).onChanged(error.localizedMessage)
-	}
+    @Test
+    fun `deleteNote unsuccessful EXPECT state will be changed on error`() {
+        val error = UnknownHostException()
 
-	@Test
-	fun `loadNotes successful EXPECT notes will be changed`() {
-		whenever(getNotesUseCase()).thenReturn(Single.just(notesList))
+        whenever(deleteNoteUseCase(note)).thenReturn(Completable.error(error))
 
-		viewModel.loadNotes()
+        viewModel.deleteNote(note)
 
-		verify(notesObserver).onChanged(notesList)
-	}
+        inOrder(stateObserver) {
+            verify(stateObserver).onChanged(NotesListState.InProgress)
+            verify(stateObserver).onChanged(any<NotesListState.Error>())
+        }
+    }
 
-	@Test
-	fun `loadNotes unsuccessful EXPECT message will be changed`() {
-		val error = UnknownHostException()
+    @Test
+    fun `loadNotes successful EXPECT notes will be changed`() {
+        whenever(getNotesUseCase()).thenReturn(Single.just(notesList))
 
-		whenever(getNotesUseCase()).thenReturn(Single.error(error))
+        viewModel.loadNotes()
 
-		viewModel.loadNotes()
+        verify(notesObserver).onChanged(notesList)
+    }
 
-		verify(messageObserver).onChanged(error.localizedMessage)
-	}
+    @Test
+    fun `loadNotes unsuccessful EXPECT state will be changed on error`() {
+        val error = UnknownHostException()
+
+        whenever(getNotesUseCase()).thenReturn(Single.error(error))
+
+        viewModel.loadNotes()
+
+        inOrder(stateObserver) {
+            verify(stateObserver).onChanged(NotesListState.InProgress)
+            verify(stateObserver).onChanged(any<NotesListState.Error>())
+        }
+    }
 }
