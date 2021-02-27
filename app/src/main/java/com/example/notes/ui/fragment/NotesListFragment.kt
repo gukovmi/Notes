@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notes.App
@@ -15,6 +16,8 @@ import com.example.notes.ui.adapter.NotesListAdapter
 import com.example.notes.ui.base.BaseFragment
 import com.example.notes.ui.utils.subscribeSafe
 import kotlinx.android.synthetic.main.fragment_notes_list.createNoteNotesListButton
+import kotlinx.android.synthetic.main.fragment_notes_list.notesListContent
+import kotlinx.android.synthetic.main.fragment_notes_list.notesListProgressBar
 import kotlinx.android.synthetic.main.fragment_notes_list.notesListRecyclerView
 import javax.inject.Inject
 
@@ -74,8 +77,20 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 
 	private fun updateState(state: NotesListState) {
 		when (state) {
+			is NotesListState.InProgress -> renderInProgressState()
+			is NotesListState.Default -> renderInDefaultState()
 			is NotesListState.Error -> showError(state.throwable)
 		}
+	}
+
+	private fun renderInDefaultState() {
+		notesListProgressBar.isVisible = false
+		notesListContent.isVisible = true
+	}
+
+	private fun renderInProgressState() {
+		notesListProgressBar.isVisible = true
+		notesListContent.isVisible = false
 	}
 
 	private fun showError(throwable: Throwable) {

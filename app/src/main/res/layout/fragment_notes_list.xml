@@ -1,42 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:padding="16dp"
 	tools:context=".ui.fragment.NotesListFragment">
 
-	<com.google.android.material.textview.MaterialTextView
-		android:id="@+id/titleListTextView"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:text="@string/title_list_text_view"
-		android:textAppearance="?attr/textAppearanceHeadline6"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/notesListRecyclerView"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/notesListContent"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_marginTop="24dp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/titleListTextView"
-		tools:listitem="@layout/item_note" />
+		android:padding="16dp">
 
-	<ImageButton
-		android:id="@+id/createNoteNotesListButton"
+		<com.google.android.material.textview.MaterialTextView
+			android:id="@+id/titleListTextView"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:text="@string/title_list_text_view"
+			android:textAppearance="?attr/textAppearanceHeadline6"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/notesListRecyclerView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginTop="24dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/titleListTextView"
+			tools:listitem="@layout/item_note" />
+
+		<ImageButton
+			android:id="@+id/createNoteNotesListButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="50dp"
+			android:layout_marginEnd="50dp"
+			android:background="#00000000"
+			android:src="@drawable/ic_twotone_add_circle_24"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<ProgressBar
+		android:id="@+id/notesListProgressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="50dp"
-		android:layout_marginEnd="50dp"
-		android:background="#00000000"
-		android:src="@drawable/ic_twotone_add_circle_24"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+		android:layout_gravity="center"
+		android:visibility="gone" />
+
+</FrameLayout>
