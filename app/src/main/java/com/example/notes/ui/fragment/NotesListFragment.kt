@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notes.App
 import com.example.notes.R
 import com.example.notes.domain.entity.Note
+import com.example.notes.presentation.state.NotesListState
 import com.example.notes.presentation.viewmodel.NotesListViewModel
 import com.example.notes.ui.adapter.NotesListAdapter
 import com.example.notes.ui.base.BaseFragment
@@ -42,7 +43,10 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 		initViews(view)
 		initAdapter()
 		initListeners()
-		viewModel.loadNotes()
+
+		if (viewModel.state.value == null) {
+			viewModel.loadNotes()
+		}
 	}
 
 	private fun initViews(view: View) {
@@ -54,7 +58,7 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 
 	private fun initListeners() {
 		viewModel.notes.observe(this.viewLifecycleOwner, notesListAdapter::showNotes)
-		viewModel.message.subscribeSafe(this.viewLifecycleOwner, ::showMessage)
+		viewModel.state.subscribeSafe(this.viewLifecycleOwner, ::updateState)
 	}
 
 	private fun initAdapter() {
@@ -68,7 +72,13 @@ class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 		notesListRecyclerView.adapter = notesListAdapter
 	}
 
-	private fun showMessage(message: String) {
-		Toast.makeText(this.context, message, Toast.LENGTH_LONG).show()
+	private fun updateState(state: NotesListState) {
+		when (state) {
+			is NotesListState.Error -> showError(state.throwable)
+		}
+	}
+
+	private fun showError(throwable: Throwable) {
+		Toast.makeText(this.context, throwable.localizedMessage, Toast.LENGTH_LONG).show()
 	}
 }
